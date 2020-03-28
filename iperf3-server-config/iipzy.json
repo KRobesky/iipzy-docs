@@ -1,0 +1,5 @@
+{"serverAddress":"server-address",
+"instanceGuid":"instance-guid",
+"iipzyIperf3ServerPort":"8002",
+"iperf3Address":"this-server-address",
+"iperf3BasePort":"65201"}

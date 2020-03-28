@@ -1,0 +1,213 @@
+Issues:
+  1. (fixed) Ping Chart flashes when login completes.
+  2. (fixed - sort of) Pi doesn't seem to login to server
+       Pi should use config to log in if there are credentials.  Pi should only pay attention to
+       client logout - then logout too.
+  3. (don't care) Components are recreated on Navigator link
+  4. (don't care) If on SpeedTest window when not logged in, goes to Ping Chart window on login.
+  5. (mitigated) RRdb sometimes gets corrupted on stopping
+  6. (cnr) Pi SpeedTest fails with 401
+  7. (fixed) Pi SpeedTest doesn't know state of login
+  8. (done) Implement tooltip on Ping Chart window.
+  9. (done) SSL from client to pi
+ 10. Pi - where to put certs
+ 11. (done) SSL from client/pi to server
+ 12. (done, sorta) Server - send email on client down
+ 13. (done) Log upload from pi to server
+ 14. Pi gets confused when different users log in and out
+ 15. (done) Success/fail feedback on login/edit user/register user
+ 16. (done) Clients (pi and client) should show online if doing heartbeats. Plus, logged in, if logged in.
+ 17. (done) Pi should not re-login when client logs in, if already logged in.
+ 18. (done) If login fails, sleep for a random amount of time.
+ 19. (done) If login fails, return 401.
+ 20. (no) Redirect to different server.
+ 21. (no) Upload speedtest results.
+ 22. (done) Get ping target from server.
+ 23. Scheduler
+ 24. (done) Reset password send one-time password to email.
+ 25. (done) Edit user requires password.
+ 26. (done) Login/Logout window should have "fail" popup.
+ 27. (done) [Daily] limit on speed tests
+ 28. (done) After initial registration, show Login window.
+ 29. (done) Speed Test results to rrdb.
+ 30. (done) Remove server url from code.
+     - (done) client
+     - (done) pi
+     - (done) iperf3
+ 31. (fixed) Pi didn't log in after restart.
+ 32. (done) Client - redo auth to match pi.
+ 33. (done) Window to change server url.
+ 34. (done) Get rid of passwords in logs.
+ 35. (done) See: https://my.noip.com/#!/dynamic-dns/duc
+ 36. (done) Change http to be synchronous and handle errors.
+     - (done) fix RemoteJobManager.run.
+ 37. Getting ECONNRESET on client event pi handler.
+ 38. (done) Remove try/catch around http calls.
+     - (done) client
+     - (done) client-shared
+     - (done) pi
+     - (done) iperf3
+     - (done) server
+ 39. (fixed) Speedtest - no error message if limit reached on upload test.
+ 40. (fixed) Scroll to dropped packet doesn't work. 
+ 41. (fixed) On startup, Ping Latency, dropped packet button is not enabled.
+ 42. (done) noip - iipzy.ddns.net
+ 43. nexmo -- https://dashboard.nexmo.com/getting-started/sms
+ 44. (done) Bring up server on aws or digital ocean.  -- used Digital Ocean --
+ 45. (done) Clean up AuthToken table.  Solution: AuthTokenTable removed.
+ 46. (done) Shared - transactional writeFile, readFile.
+ 47. (no) Iipzy-pi self update.
+ 48. (fixed, again - by pre allocating space) rrdb still has problems.
+ 49. (done) Use 46. for config file.
+ 50. pi - sonos discovery
+ 51. pi - google discovery
+ 52. pi - alexa discovery
+ 53. pi - smart home discovery
+ 54. (fixed) device.watch sometimes undefined.
+ 55. (done, I guess) setDeviceStatus on (alive = false).
+ 56. (done) device watch - determine if a device has been replaced.
+ 57. (na, table is now cleaned daily) Add "Discarded" field to ClientInstance table.
+ 58. (done) iipzy-pi (pi and updater) run as user pi
+ 59. (done) Update window from client.  Takes a full target string.
+ 60. (done)Make sure responses are consistent from server and from pi.
+     - (done) server
+     - (done) pi
+     - (done) client-shared
+ 61. (done) Move "mode" to "settings" window.
+ 62. (done) Cleanup old log files (> 14 days).
+ 63. (done) ClientInstance table: Add ClientType and make ClientIpAddress, ClientType unique.
+ 64. (fixed) -- critical -- connection leak in server. [I think this was due to conn req before mysqld was up]
+       Fixed by making iipzy server service dependent on mysqld.
+ 65. (done) From iipzy_pi, send machine status such as "df" and cpu temp, cpu load, mem usage (part of heartbeat)
+ 66. (done) Implement log levels.
+     - (done) client
+     - (done) client-shared
+     - (done) pi
+     - (done) iperf3
+     - (done) server
+     - (done) shared
+     - (done) updater
+ 67. (done) Check setInterval for re-entrancy.
+ 68. (done) real time log level change via iipzy.json.
+ 69. (done) Set log levels via app
+     - client
+     - iipzy-pi
+ 70. (done) Client debug menu available to admin only.
+ 71. (done) Use shared SendDelayedResults in Pi.
+ 72. (fixed) -- critical -- /var/log permissions revert on reboot. New dir /var/log/iipzy/...
+ 73. (fixed, not tested) -- critical -- Ping - if duration == 0 (forever), wait and restart ping
+ 74. "About" window declaring what is sent to and saved by server.
+ 75. (done) - server - check IsAdmin where appropriate.
+ 76. - iipzy-pi - alert on unexpected restarts.
+ 77. On network devices, have a "don't check" option.
+ 78. (fixed) -- critical -- After client crash, cannot connect to pi.  Getting "bad connection token"
+ 79. Sometimes, on client restart, ping plot is not filled correctly.
+ 80. (done) - critical - put a daily limit of 100 on text messaages.
+ 81. (done) Display address of log files on settings screen - read only.
+ 82. (fixed) If you leave throughput window on not-current-sample, when you come back, the sample is empty.
+     Send is disabled on client-shared side.
+ 83. (done) remote control of log setting and log upload.
+ 84. Read-only git user.
+ 85. (done) get log level on token change.
+ 86. (done)- critical - rrdb - id should always be based on position in file.
+ 87. (fixed) local rrbd created in remote case.  It shouldn't be.  For throughput.
+ 88. (done) Allows multiple clients/pi's per ipaddress.
+ 89. (done) Restart appliance should reboot appliance.
+ 90. (fixed) - critical - wrong client token in iipzy.json after changing pi ip address.
+ 91. (done - already does) - critical - updater needs to get client token on change.
+ 92. (done) Send alert on packet loss.
+ 93. (fixed) Iperf3 use count at 10 - why?
+ 94. (done) ClientInstance table - make public ip, local ip unique - so that clientToken is reused.
+ 95. (done) Only get timezone on public ip address change.
+ 96. (done) Tool tip should show even if button is disabled (e.g, left red arrow).
+ 97. (done) Suppress up events on server restart.
+ 98. (fixed) Problem with zoom in if latest sample is in scope of display.
+ 99. (done) Suppress dropped ping alert if due to off line alert.
+100. (done) Suppress client alert if not standalone.
+-- 2019-10-28 --
+101. (done) Show login window if not logged in.
+-- 2019-10-29 --
+102. (done) Keep track - in db - ipgeolocation calls.
+103. (done) Display registration window if user isn't registered.
+-- 2019-10-31 --
+104. (already this way) Don't count ping time = 0 in average.
+-- 2019-11-01 --
+105. (fixed) Don't attempt email send if tgt not defined.
+-- 2019-11-05 --
+106. (fixed) -- critical -- Ed's appliance.  Ping didn't respond for 10 minutes or so because net went offline. 
+        Dropped packets were not shown in Ping Chart.  Instead, good packet was repeated.
+-- 2019-11-13 --
+107. (done) Ping chart - disable buttons on scroll until data comes back.
+108. (done) Ping Plot - yield during zoom.
+-- 2019-12-30 --
+109. (done) For pi timezone - Drop subscription to IPGeoLocation.  Use IpApi via server instead.
+-- 2020-01-06 --
+110. (done) Pi - don't recognize sentinel discovery if currently in use.
+111. (done) Server - provide for download of pi image.
+-- 2020-01-07
+112. (fixed) If sentinel offline when ping window mounts, window isn't updated. (Need to switch to another window and back.)
+-- 2020-01-20 --
+  -- Rewrite service to use web pages rather than electron --
+  1, (done) Send credentials to sentinel on iipzy-sentinel-web login.
+  2. (done) If logged in, show sentinel window.
+  3. (done) Administration: show Client Window by default.
+  4. (done) Add icon.
+  5. (done) Remove "iipzy" from navbars.
+  6. (done) In ApplianceInitialSetup, install iipzy.json with serverIPAddress set
+  7. (done) Obscure params to iipzy-sentinel-web (i.e., username, password, from).
+  8. (done) Show administration iff user has admin privileges.
+  9. Fix windows so they look ok in a browser.	See iipzy-server-web, sentinelsWindow.jsx
+ 10. (done) Provide a way to set client name.
+ 11. (done) Download window - for downloading iipzy-pi and explaining how to install on pi.
+ 12. About page explaining what data is saved on server.
+ 13. (done) Show user name and remote address in admin clients window.
+ 14. (no) Prompt for client name in sentinel-web.
+ 15. (done) iipzy-sentinel-web - on settings, a way to set iipzy service ip address (e.g., iipzy.net:8001)
+ 16. (done) iipzy-sentinel-web - on settings, a way to set client name.
+	 - add iipzy.net:443/client/clientName GET, POST, PUT.
+ 17. Admin params saving to cookie not working.
+ 18. (done) Must be logged in to view sentinel window.
+ 19. (ok - will be fixed by client token changes) Updater status is messed up. -- caused by two sentinels having the same client token.
+ 20. (done) Close "X" on edit user password window.  
+ 	 See: https://mdbootstrap.com/docs/react/utilities/close-icon/
+	 See: https://v4-alpha.getbootstrap.com/utilities/close-icon/
+	 See: https://react.semantic-ui.com/elements/icon/
+ 21. (done) Change client token to be client side generated. Looks like <public ip address>:<local ip address>:timestamp, uri encoded. 
+ 		E.g., 108.211.109.65:192.168.1.56:1580222207, uriEncoded.
+	 - for web client, generated client token is kept in cookie.
+	 - for sentinel, generated client token is kept in config, checked at sentinel startup time..
+	 - add iipzy:443/api/client/myipaddress
+ 22. (done) Change iipzy-sentinel-web port to 8008.
+ 23. (done login window on iipzy-sentinel-web to allow for local login.  e.g. 192.168.1.72/login
+ 24. (done) iipzy-sentinel-web, iff no params, show login page if login needed, ping plot otherwise.  
+ 	 NB:  NEED LOGIN - meaning sentinel has no -or - invalid credentials..
+ 25. (done) Change iipzy-sentinel-web port to 8008.
+ 26. Limit frequency of POST clientToken - to prevent DOS.
+ 27. (done) Obsolete iipzy-client-shared.  Move code into iipzy-pi.
+ 27. (fixed) Devices window is broken. (it was busted before merge.)
+ 28. (done) Default clientName = sentinel@192.168.1.56 (e.g.)
+ 29. Web - copy/paste doesn't work on Safari
+ 30. (done) Test with iipzy.json having only serverIPAddress.
+ 31. bug - iipzy-sentinel-web - verify says login succeeded when connecting to service fails.
+ 32. bug - need to handle logout in sentinel - instead of using blank password.
+ 33. (done) Handle "no iipzy.json" on sentinel.
+ 34. Sentinel bases when to run speed test on local ip address.
+ 35. (done) - HI PRI - On Sentinel start, if old-style client token, create a new style.  Use client name from config.
+ 36. (done) Remove 35.
+ 37. (done) If public or local ip address changes, wipe out client token and auth token.
+ 38. (no) Timeout if local ip address not seen in one minute.
+ 39. (done) Make "login" the default if there are no credentials.
+ 40. On server, verify that auth token comes from client token.
+ 41. (done) Add third process on Sentinel - iipzy-admin.  Handles log upload, reboot [et.al.], log settings.  Remove from iipzy-pi
+ 42. Verify the updater and admin client tokens match req.ip.
+ 43. (done) In ApplianceInitialSetup.sh, change gits to use local address.
+ 44. Version info from updater is broken.
+ 45. (Done) Sentinel - support WiFi.
+ 46. Iperf3 Server.  Limit to one speed test at a time.
+ 47. (fixed) On Wifi password fail, remove network.
+ 48. Info on Settings page about wifi degrading ping latency and throughput.
+ 49. (done) Include currrent interface name when client registers
+ 50. (done) Export/Import rrdbs.
+
+
+ 

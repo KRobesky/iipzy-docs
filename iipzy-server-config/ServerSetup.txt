@@ -1,0 +1,310 @@
+On Digital Ocean:
+
+Need a droplet with at least 2GB memory.  Otherwise thrashing occurs.
+
+Droplet Name: droplet-name
+IP Address: droplet-ip-address
+Username: root
+Password: password-from-digital-ocean
+
+New password: new-password
+
+Installs
+
+	yum install bash
+	yum install wget
+	yum install gcc
+	yum install gcc-c++.x86_64
+
+
+Install git
+
+	yum install git
+
+	git config --global user.name "User Name"
+	git config --global user.email email@x.y
+	git init
+	git remote add origin http://<username:password>@<git-repository>/iipzy-server
+
+Git server and shared.
+
+	git clone http://<username:password>@<git-repository>/iipzy-server.git
+	git clone http://<username:password>@<git-repository>/iipzy-shared.git
+
+Install node
+
+	- See: https://docs.aws.amazon.com/sdk-for-javascript/v2/developer-guide/setting-up-node-on-ec2-instance.html
+
+	curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.34.0/install.sh | bash
+
+	. ~/.nvm/nvm.sh
+
+	nvm install node
+
+	node -e "console.log('Running Node.js ' + process.version)"
+
+
+Install mysql
+
+	- See: https://www.tecmint.com/install-latest-mysql-on-rhel-centos-and-fedora/
+
+	- See also, for removing: https://tecadmin.net/remove-mysql-completely-from-linux-system/
+
+			yum remove mysql-community-server
+			rm -r -f /var/lib/mysql
+			rm /var/log/mysqld.loyung
+
+	wget https://repo.mysql.com/mysql80-community-release-el7-1.noarch.rpm
+	yum localinstall mysql80-community-release-el7-1.noarch.rpm
+
+	- verify
+
+	yum repolist enabled | grep "mysql.*-community.*"
+
+	- continue install
+
+	yum install mysql-community-server
+
+	- start service
+
+	systemctl enable mysqld
+	systemctl start mysqld
+	systemctl status mysqld
+
+	- verify
+
+	mysql --version
+
+	- secure
+
+	grep 'temporary password' /var/log/mysqld.log					==> rJlaqzfq!2le
+
+	mysql_secure_installation
+
+		use <password> for user and root passwords.
+
+	- mysql_native_password so that odbc can be used.
+
+	mysql -u root -p	  .. password is <password>
+
+		CREATE USER 'iipzy_dba'@'%' IDENTIFIED WITH mysql_native_password BY '<password>';
+
+		GRANT ALL PRIVILEGES ON *.* TO 'iipzy_dba'@'%' WITH GRANT OPTION;
+
+	run schema.sql script
+
+Install sysstat for iostat
+
+	yum install sysstat
+
+Install iipzy-shared and iipzy-server
+
+	cd iipzy-server/iipzy-shared
+	npm i
+
+	cd ../iipzy-server
+	npm i
+
+Install config files
+
+	mkdir /etc/iipzy
+
+	copy from Windows iipzy-service/iipzy-config-private/iipzy-server-config
+
+		email-config.json
+		ipapi-config.json
+		mysql-config.json
+		sms-config.json
+
+	to /etc/iipzy.
+
+Install iipzy-server.service
+
+	cp /root/iipzy-service/iipzy-server/src/extraResources/iipzy-server.service /etc/systemd/system
+
+	- fix up node path in /etc/systemd/system/iipzy-server.service
+
+	whereis node
+	node: /root/.nvm/versions/node/v12.10.0/bin/node
+
+	use vi to edit.
+
+	systemctl enable iipzy-server
+	systemctl start iipzy-server
+	systemctl status iipzy-server
+
+Install iipzy-server-web.service
+
+	cp /root/iipzy-service/iipzy-server-web/src/extraResources/iipzy-server-web.service /etc/systemd/system
+
+	- fix up node path in /etc/systemd/system/iipzy-server-web.service
+
+	whereis serve
+	serve: /root/.nvm/versions/node/v12.10.0/bin/serve
+
+	use vi to edit.
+
+	systemctl enable iipzy-server-web
+	systemctl start iipzy-server-web
+	systemctl status iipzy-server-web
+
+Install ddns client
+
+	See: https://www.noip.com/support/knowledgebase/installing-the-linux-dynamic-update-client/
+
+		and
+		
+		 https://serverfault.com/questions/822059/centos-7-service-user-at-startup
+
+	- build
+
+	cd /usr/local/src
+	wget http://www.no-ip.com/client/linux/noip-duc-linux.tar.gz
+	tar xzf noip-duc-linux.tar.gz
+	cd noip-2.1.9-1
+	make
+	make install
+
+	- configure 
+
+	NB: The configure part happened on "make install"
+
+	no needed- /usr/local/bin/noip2 -C   (dash capital C, this will create the default config file)
+	no needed- You will then be prompted for your username and password for No-IP, as well as which hostnames you wish to update.  
+	no needed- Be careful, one of the questions is “Do you wish to update ALL hosts”.  If answered incorrectly this could affect 
+	no needed- hostnames in your account that are pointing at other locations.
+
+	Now that the client is installed and configured, you just need to launch it.  Simply issue this final command to 
+	launch the client in the background:
+
+	/usr/local/bin/noip2
+
+	-- install as service
+
+	- noip.service
+
+		[Unit]
+		Description=Noip
+		User=root
+
+		[Service]
+		Type=forking
+		ExecStart=/usr/local/bin/noip2
+
+		[Install]
+		WantedBy=multi-user.target
+
+		[Unit]
+		Wants=network-online.target
+		After=network-online.target
+
+	systemctl enable noip.service
+	systemctl start noip.service
+	systemctl status noip.service
+
+
+Email for alerts
+
+	Set up adn account somewhere.  Edit email-config.
+
+Do some tests.
+
+	Add a user
+
+	Cause an alert
+
+	Update iipzy-pi (appliance)
+
+	Check the DB.
+
+
+Digital Ocean Server Address: ???
+
+Certificate for iipzy.net
+
+	NB: There was a lot of trial and error.  This is a vague recollection of the process.
+
+	https://lookup.icann.org/lookup
+
+	Buy cert on Namecheap
+
+	generate stuff on server
+
+		See: https://www.digitalocean.com/community/questions/how-do-i-generate-a-csr-key		
+
+		openssl req -new -newkey rsa:2048 -nodes -keyout iipzy.net.key -out iipzy.net.csr
+
+	On Namecheap, use HTTP verification method
+
+		See; https://www.namecheap.com/support/knowledgebase/article.aspx/9637/68/how-can-i-complete-the-domain-control-validation-dcv-for-my-ssl-certificate?_ga=2.196774892.1365484871.1575902245-854598685.1575902245
+
+	On iipzy.net server, install Apache
+
+		See: https://www.digitalocean.com/community/tutorials/how-to-install-the-apache-web-server-on-centos-7
+
+		yum install httpd
+		sudo systemctl enable httpd
+		sudo systemctl start httpd
+		sudo sustemctl status httpd
+
+		test from Chrome
+
+	put validationfile in /var/www/html/.well-known/pki-validation
+
+	Set the verification method to HTTP (again).  Click Done.  Click Done on the Certificate Details page.  
+	Look for the Status = "Issued".
+	An email or two will show up eventually.
+
+	Download cert from Namecheap
+
+	Add to <domain-name> cert to account on Digital Ocean
+
+	copy <domain-name>.key to 
+
+		/etc/pki/tls/certs/<domain-name>.key
+		/root/iipzy-service/iipzy-server/src/certificate/server.key
+
+	copy <domain-name>.crt to
+
+		/etc/pki/tls/certs/<domain-name>.crt
+		/root/iipzy-service/iipzy-server/src/certificate/server.cert
+
+	NB: The old key, cert in /root/iipzy-service/iipzy-server/src/certificate allow ssl but do not validate the domain name.
+
+	Enable ssl for Apache
+
+		See: https://www.linode.com/docs/security/ssl/ssl-apache2-centos/
+
+		Add ServerName to
+
+			/etc/httpd/conf/httpd.conf
+
+		/etc/httpd/conf.d/ssl.conf:
+
+			Listen 443
+
+			<VirtualHost *:443>
+				SSLEngine On
+				SSLCertificateFile /etc/pki/tls/certs/<domain-name>.crt
+				SSLCertificateKeyFile /etc/pki/tls/certs/<domain-name>.key
+
+				ServerAdmin info@<domain-name>
+				ServerName www.<domain-name>
+				DocumentRoot /var/www/<domain-name>/public_html/
+				ErrorLog /var/www/<domain-name>/logs/error.log
+				CustomLog /var/www/<domain-name>/logs/access.log combined
+			</VirtualHost>
+
+
+		Permissions
+
+			chown apache.apache /var/www/<domain-name>/logs
+
+		Hack to get Apache working - disable selinux
+
+			https://linuxize.com/post/how-to-disable-selinux-on-centos-7/
+
+	Disable Apache as it is not needed.
+
+		systemctl stop httpd
+		systemctl disable httpd

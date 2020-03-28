@@ -1,0 +1,150 @@
+Client:
+	State							Action							Event Sent		Window
+
+	Startup
+		no iipzy.json				register user									register user
+		no username || password		login window									login window
+		username && password		auto login						ipcLoginState	<next>
+			success					----
+			fail (401)				login window									login window
+			fail (other)			error message, login window
+
+		Client with Pi
+
+		no pi addr					discovery										discovery window
+			then...
+		pi addr, discovered			send credentials			    ipcPiAddress	connecting window
+		pi addr, not discovered		discovery window.								discovery window
+		pi addr, discovered, but													
+			can't connect			retry											connecting window
+
+
+	Nominal - heartbeat
+		401 from server				send event						ipcClientLoginNeeded
+		401 again					error then login window							login window
+
+	Nominal - eventWait ok			none
+			- eventWait nok			connecting window								connecting window
+			- eventWait, for main
+				login fails															login window
+				???
+
+	Nominal - logout				login window									login window
+									tell pi
+	Nominal - login
+		success						tell pi	with credentials
+		fail (401)					login window									login window
+		fail (other)				retry
+
+	Nominal - ipcClientLoginNeeded	login window									login window
+		
+	Nominal - ipcPiLoginFailed		login window									login window
+
+	Exit - clean					send logout					
+
+Pi:
+	State							Action
+
+	Startup
+		has credentials				auto login
+			success					----
+			fail (401)				tell client
+			fail (other)			retry
+		no credentials				----
+
+	Nominal	- credentials 			auto logout, then login
+				from client
+			success					----
+			fail (401)				tell client						ipcPiLoginFailed, 
+																	remember in config.
+			fail (other)			retry
+
+
+	Nominal - heartbeat
+		401 from server				auto login
+		other from server			retry
+		401 again					tell client
+
+							  -----------------
+							  |		          |
+							  |				  |
+							  |				  |
+-----------------			  |	    Pi		  |
+|				|	http	  |				  |	 http
+|				|------------>|				  |---------
+|				|			  |				  |		   |		   -----------------
+|	  Main		|			  -----------------		   |		   |		       |
+|				|	http		  					   ----------->|			   |
+|				|---------------------|			                   |			   |
+|				|			  		  ---------------------------->|	 Server    |
+-----------------			  									   |			   |
+	 |	   ^						  ---------------------------->|			   |
+	 | ipc |						 | 		   				   	   |			   |
+	 |	   |						 |			                   -----------------
+	 v	   |						 |
+-----------------					 |
+|				|	http			 |
+|				|--------------------
+|				|
+|   Renderer	|
+|				|
+|				|
+|				|
+-----------------
+
+No config  - allow login & register
+
+If register, then login
+
+Login ==> config
+
+If pi && no addr, discovery.  Addr ==> config
+
+Send credentials to pi
+
+———
+
+On any login, send credentials to pi.  Pi logs in.
+
+On any logout, send to pi.  Pi logs out
+
+———-
+
+Windows
+
+Ping: no pi, always.  With pi, must be connected
+
+Speedtest: no pi, must be logged in. With pi, must be connected
+
+Schedule: no pi, always.  With pi, must be connected
+
+Login: always
+
+User: must be logged in
+
+Register: no config or logged in as admin
+
+Connecting: must be logged in.  Connecting to pi or pi in use
+
+Discovery: must be logged in.  looking for pi
+
+———-
+
+Login - send params to main.  Main attempts.  Sends results to render
+
+User - direct to server
+
+Register - direct to server
+
+———
+
+On pi connect, send to renderer
+
+On pi disconnect, send to renderer
+
+
+
+
+
+
+

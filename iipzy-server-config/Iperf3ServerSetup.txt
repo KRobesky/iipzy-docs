@@ -1,0 +1,73 @@
+On Digital Ocean:
+
+Droplet Name: droplet-name
+IP Address: ???.???.???.???
+Username: root
+
+New password: new password
+
+Installs
+
+	yum install bash
+	yum install wget
+	yum install gcc
+	yum install gcc-c++.x86_64
+
+
+Install git
+
+	yum install git
+
+	git config --global user.name "User Name"
+	git config --global user.email email@x.y
+	git init
+	git remote add origin http://<username:password>@<git-repository>/iipzy-iperf3
+
+Git server and shared.
+
+	git clone http://<username:password>@<git-repository>/iipzy-iperf3.git
+	git clone http://<username:password>@<git-repository>/iipzy-shared.git
+
+Install node
+
+	- See: https://docs.aws.amazon.com/sdk-for-javascript/v2/developer-guide/setting-up-node-on-ec2-instance.html
+
+	curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.34.0/install.sh | bash
+
+	. ~/.nvm/nvm.sh
+
+	nvm install node
+
+	node -e "console.log('Running Node.js ' + process.version)"
+
+Install iipzy-shared and iipzy-server
+
+	cd iipzy-server/iipzy-shared
+	npm i
+
+	cd ../iipzy-server
+	npm i
+
+Install config files
+
+	mkdir /etc/iipzy
+
+Install iipzy-iperf3.service
+
+	cp /root/iipzy-service/iipzy-iperf3/src/extraResources/iipzy-iperf3.service /etc/systemd/system
+
+	- fix up node path in /etc/systemd/system/iipzy-iperf3.service
+
+	whereis node
+	node: /root/.nvm/versions/node/v12.10.0/bin/node
+
+	use vi to edit.
+
+	systemctl enable iipzy-iperf
+	systemctl start iipzy-iperf3
+	systemctl status iipzy-iperf3
+
+Build iperf3
+
+	to do...
+
